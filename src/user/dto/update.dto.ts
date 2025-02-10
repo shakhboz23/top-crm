@@ -78,16 +78,6 @@ export class UpdateDto {
     vocabulary?: number;
 
     @ApiProperty({
-        example: [
-            1, 2, 3
-        ],
-        description: 'Results of user',
-        required: false,
-    })
-    @IsOptional()
-    results?: any[];
-
-    @ApiProperty({
         example: false,
         description: 'AttendanceDay1 of user',
         required: false,

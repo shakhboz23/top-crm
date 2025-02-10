@@ -22,7 +22,6 @@ interface UserAttributes {
   paymentStatus: boolean;
   homework: number;
   vocabulary: number;
-  results: any[];
   attendanceDay1: boolean;
   attendanceDay2: boolean;
   attendanceDay3: boolean;
@@ -90,11 +89,6 @@ export class User extends Model<User, UserAttributes> {
     type: DataType.INTEGER,
   })
   vocabulary: number;
-
-  @Column({
-    type: DataType.JSONB,
-  })
-  results: any[];
 
   @Column({
     type: DataType.BOOLEAN,
