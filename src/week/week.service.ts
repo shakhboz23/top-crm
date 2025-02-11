@@ -26,6 +26,21 @@ export class WeekService {
     }
   }
 
+  async create8Weeks(
+    user_id: number,
+  ): Promise<object> {
+    try {
+      for (let i = 0; i < 8; i++) {
+        await this.weekRepository.create({
+          user_id
+        })
+      }
+      return;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async getAll(): Promise<object> {
     try {
       return this.weekRepository.findAll();
@@ -71,7 +86,7 @@ export class WeekService {
       const week = await this.weekRepository.findByPk(id);
       if (!week) {
         throw new NotFoundException('Week not found');
-      } 
+      }
       const update = await this.weekRepository.update(
         weekDto,
         {

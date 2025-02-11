@@ -34,8 +34,7 @@ export class UserController {
   async registerStudent(
     @Body() userDto: UserDto,
   ) {
-    const data = await this.userService.registerStudent(userDto);
-    return data;
+    return this.userService.registerStudent(userDto);
   }
 
   @ApiOperation({ summary: 'Registration a new user' })

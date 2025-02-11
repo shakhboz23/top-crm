@@ -19,6 +19,7 @@ import { TeacherDto } from './dto/teacher.dto';
 import { Week } from 'src/week/models/week.models';
 import { Results } from 'src/results/models/results.models';
 import { Tests } from 'src/test/models/test.models';
+import { WeekService } from 'src/week/week.service';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,7 @@ export class UserService {
     @InjectModel(User) private userRepository: typeof User,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly weekService: WeekService,
   ) { }
   async registerStudent(
     userDto: UserDto,
@@ -48,6 +50,17 @@ export class UserService {
         { id: user.id },
         this.jwtService,
       );
+      await this.weekService.create8Weeks(user.id)
+      user = await this.userRepository.findByPk(user.id, {
+        include: [{ model: Week }, {
+          model: Results, include: [
+            {
+              model: Tests,
+              attributes: ['questions'] // Test dagi questions massivini olish
+            }
+          ]
+        }],
+      });
 
       return {
         statusCode: HttpStatus.OK,
@@ -188,6 +201,14 @@ export class UserService {
       const user = await this.userRepository.findOne({
         where: { id },
         replacements: { id, current_role },
+        include: [{ model: Week }, {
+          model: Results, include: [
+            {
+              model: Tests,
+              attributes: ['questions'] // Test dagi questions massivini olish
+            }
+          ]
+        }],
       });
       if (!user) {
         throw new NotFoundException('User not found!');
@@ -201,7 +222,16 @@ export class UserService {
   async pagination(page: number, limit: number): Promise<object> {
     try {
       const offset = (page - 1) * limit;
-      const users = await this.userRepository.findAll({ offset, limit });
+      const users = await this.userRepository.findAll({
+        offset, limit, include: [{ model: Week }, {
+          model: Results, include: [
+            {
+              model: Tests,
+              attributes: ['questions'] // Test dagi questions massivini olish
+            }
+          ]
+        }],
+      });
       const total_count = await this.userRepository.count();
       const total_pages = Math.ceil(total_count / limit);
       const response = {

@@ -27,16 +27,16 @@ export class WeekController {
     private readonly jwtService: JwtService,
   ) { }
 
-  @ApiOperation({ summary: 'Create a new week' })
-  @UseGuards(AuthGuard)
-  @Post('/create')
-  @ApiBearerAuth('JWT-auth')
-  async create(
-    @Body() weekDto: WeekDto,
-    @Headers() headers: Record<string, string>,
-  ) {
-    return this.weekService.create(weekDto);
-  }
+  // @ApiOperation({ summary: 'Create a new week' })
+  // @UseGuards(AuthGuard)
+  // @Post('/create')
+  // @ApiBearerAuth('JWT-auth')
+  // async create(
+  //   @Body() weekDto: WeekDto,
+  //   @Headers() headers: Record<string, string>,
+  // ) {
+  //   return this.weekService.create(weekDto);
+  // }
 
   // @ApiOperation({ summary: 'Get week by ID' })
   // @UseGuards(AuthGuard)
