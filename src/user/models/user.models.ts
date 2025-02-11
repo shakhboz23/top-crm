@@ -3,10 +3,13 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Group } from 'src/group/models/group.models';
+import { Results } from 'src/results/models/results.models';
+import { Week } from 'src/week/models/week.models';
 
 export enum userRole {
   student = 'student',
@@ -113,4 +116,16 @@ export class User extends Model<User, UserAttributes> {
     defaultValue: userRole.student,
   })
   role: userRole;
+
+  @HasMany(() => Week, {
+    onDelete: 'CASCADE',
+    hooks: true,
+  })
+  weeks: Week[];
+
+  @HasMany(() => Results, {
+    onDelete: 'CASCADE',
+    hooks: true,
+  })
+  results: Results[];
 }

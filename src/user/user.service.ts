@@ -16,6 +16,9 @@ import { OAuth2Client } from 'google-auth-library';
 import { UpdateDto } from './dto/update.dto';
 import { UserDto } from './dto/user.dto';
 import { TeacherDto } from './dto/teacher.dto';
+import { Week } from 'src/week/models/week.models';
+import { Results } from 'src/results/models/results.models';
+import { Tests } from 'src/test/models/test.models';
 
 @Injectable()
 export class UserService {
@@ -140,7 +143,35 @@ export class UserService {
 
   async getAll(): Promise<object> {
     try {
-      const users = await this.userRepository.findAll();
+      const users = await this.userRepository.findAll({
+        include: [{ model: Week }, {
+          model: Results, include: [
+            {
+              model: Tests,
+              attributes: ['questions'] // Test dagi questions massivini olish
+            }
+          ]
+        }],
+      });
+      return users;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getByGroup(group_id: number): Promise<object> {
+    try {
+      const users = await this.userRepository.findAll({
+        where: { group_id },
+        include: [{ model: Week }, {
+          model: Results, include: [
+            {
+              model: Tests,
+              attributes: ['questions'] // Test dagi questions massivini olish
+            }
+          ]
+        }],
+      });
       return users;
     } catch (error) {
       throw new BadRequestException(error.message);

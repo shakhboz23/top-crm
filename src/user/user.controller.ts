@@ -64,6 +64,14 @@ export class UserController {
     return this.userService.getAll();
   }
 
+  @ApiOperation({ summary: 'Get all users' })
+  @UseGuards(AuthGuard)
+  @Get('/getByGroup/:group_id')
+  @ApiBearerAuth('JWT-auth')
+  getByGroup(@Param('group_id') group_id: number) {
+    return this.userService.getByGroup(group_id);
+  }
+
   @ApiOperation({ summary: 'Get user by ID' })
   @UseGuards(AuthGuard)
   @Get(':id')
