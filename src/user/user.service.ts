@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User, userRole } from './models/user.models';
+import { defaultVal, User, userRole } from './models/user.models';
 import { InjectModel } from '@nestjs/sequelize';
 import { JwtService } from '@nestjs/jwt';
 import { generateToken } from '../utils/token';
@@ -16,10 +16,11 @@ import { OAuth2Client } from 'google-auth-library';
 import { UpdateDto } from './dto/update.dto';
 import { UserDto } from './dto/user.dto';
 import { TeacherDto } from './dto/teacher.dto';
-import { Week } from 'src/week/models/week.models';
+// import { Week } from 'src/week/models/week.models';
 import { Results } from 'src/results/models/results.models';
 import { Tests } from 'src/test/models/test.models';
-import { WeekService } from 'src/week/week.service';
+import { WeekDto } from './dto/week.dto';
+// import { WeekService } from 'src/week/week.service';
 
 @Injectable()
 export class UserService {
@@ -27,7 +28,7 @@ export class UserService {
     @InjectModel(User) private userRepository: typeof User,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
-    private readonly weekService: WeekService,
+    // private readonly weekService: WeekService,
   ) { }
   async registerStudent(
     userDto: UserDto,
@@ -41,6 +42,12 @@ export class UserService {
       if (user) {
         throw new BadRequestException("This login already exists on system, please try another login");
       }
+      for (let i = 1; i <= 8; i++) {
+        userDto[`week${i}`] = {
+          ...defaultVal,
+          ...(userDto[`week${i}`] || {}),
+        }
+      }
       user = await this.userRepository.create({
         ...userDto,
         role: userRole.student,
@@ -50,17 +57,6 @@ export class UserService {
         { id: user.id },
         this.jwtService,
       );
-      await this.weekService.create8Weeks(user.id)
-      user = await this.userRepository.findByPk(user.id, {
-        include: [{ model: Week }, {
-          model: Results, include: [
-            {
-              model: Tests,
-              attributes: ['questions'] // Test dagi questions massivini olish
-            }
-          ]
-        }],
-      });
 
       return {
         statusCode: HttpStatus.OK,
@@ -156,16 +152,7 @@ export class UserService {
 
   async getAll(): Promise<object> {
     try {
-      const users = await this.userRepository.findAll({
-        include: [{ model: Week }, {
-          model: Results, include: [
-            {
-              model: Tests,
-              attributes: ['questions'] // Test dagi questions massivini olish
-            }
-          ]
-        }],
-      });
+      const users = await this.userRepository.findAll();
       return users;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -176,14 +163,6 @@ export class UserService {
     try {
       const users = await this.userRepository.findAll({
         where: { group_id },
-        include: [{ model: Week }, {
-          model: Results, include: [
-            {
-              model: Tests,
-              attributes: ['questions'] // Test dagi questions massivini olish
-            }
-          ]
-        }],
       });
       return users;
     } catch (error) {
@@ -200,15 +179,6 @@ export class UserService {
       const current_role: string = userdata?.current_role || 'student';
       const user = await this.userRepository.findOne({
         where: { id },
-        replacements: { id, current_role },
-        include: [{ model: Week }, {
-          model: Results, include: [
-            {
-              model: Tests,
-              attributes: ['questions'] // Test dagi questions massivini olish
-            }
-          ]
-        }],
       });
       if (!user) {
         throw new NotFoundException('User not found!');
@@ -223,14 +193,7 @@ export class UserService {
     try {
       const offset = (page - 1) * limit;
       const users = await this.userRepository.findAll({
-        offset, limit, include: [{ model: Week }, {
-          model: Results, include: [
-            {
-              model: Tests,
-              attributes: ['questions'] // Test dagi questions massivini olish
-            }
-          ]
-        }],
+        offset, limit,
       });
       const total_count = await this.userRepository.count();
       const total_pages = Math.ceil(total_count / limit);
@@ -253,6 +216,7 @@ export class UserService {
 
   async update(id: number, updateDto: UpdateDto): Promise<object> {
     try {
+      console.log(updateDto);
       const { login, password } = updateDto;
       const user = await this.userRepository.findByPk(id);
       if (!user) {
@@ -268,6 +232,13 @@ export class UserService {
         if (i != 'homework' && i != 'vocabulary') {
           user[i] = updateDto[i] || user[i]
         }
+      }
+      for (let i = 1; i <= 8; i++) {
+        updateDto[`week${i}`] = {
+          ...defaultVal,
+          ...(updateDto[`week${i}`] || {}),
+        }
+        console.log(updateDto[`week${i}`])
       }
       updateDto.homework = (updateDto.homework || 0) + user.homework;
       updateDto.vocabulary = (updateDto.vocabulary || 0) + user.vocabulary;

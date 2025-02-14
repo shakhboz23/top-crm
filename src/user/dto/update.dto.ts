@@ -4,10 +4,12 @@ import {
     IsEmail,
     IsNotEmpty,
     IsNumber,
+    IsObject,
     IsOptional,
     IsPhoneNumber,
     IsString,
 } from 'class-validator';
+import { WeekDto } from './week.dto';
 
 export class UpdateDto {
     @ApiProperty({
@@ -25,7 +27,7 @@ export class UpdateDto {
     @IsOptional()
     @IsPhoneNumber()
     phone?: string;
-    
+
     @ApiProperty({
         example: 'Login',
         description: 'Login of user',
@@ -57,7 +59,16 @@ export class UpdateDto {
     })
     @IsOptional()
     @IsBoolean()
-    paymentStatus?: boolean;
+    firstMonthPayment?: boolean;
+
+    @ApiProperty({
+        example: false,
+        description: 'Payment status of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsBoolean()
+    secondMonthPayment?: boolean;
 
     @ApiProperty({
         example: 0,
@@ -103,4 +114,130 @@ export class UpdateDto {
     @IsOptional()
     @IsBoolean()
     attendanceDay3?: boolean;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+            listening: false,
+            lr: false,
+            reading: false,
+            grammar: false,
+            writing: false,
+            vocabulary: false,
+            vocabularyR: false,
+            vocabularyHwT: 0,
+            listeningA: 0,
+            readingA: 0,
+            listeningT: 0,
+            readingT: 0,
+            writingT: 0,
+            speakingT: 0,
+            firstLis: false,
+            secondLis: false,
+            thirdLis: false,
+            firstRead: false,
+            secondRead: false,
+            thirdRead: false,
+            firstGrammarA: false,
+            secondGrammarA: false,
+        },
+        description: 'week1 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week1?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week2 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week2?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week3 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week3?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week4 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week4?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week5 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week5?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week6 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week6?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week7 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week7?: WeekDto;
+
+    @ApiProperty({
+        example: {
+            firstAttendance: false,
+            secondAttendance: false,
+            thirdAttendance: false,
+        },
+        description: 'week8 of user',
+        required: false,
+    })
+    @IsOptional()
+    @IsObject()
+    week8?: WeekDto;
 }

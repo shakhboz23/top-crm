@@ -13,7 +13,6 @@ import { UserService } from './user/user.service';
 import { LessonModule } from './lessons/lesson.module';
 import { BookModule } from './books/book.module';
 import { ResultsModule } from './results/results.module';
-import { WeekModule } from './week/week.module';
 
 @Module({
   imports: [
@@ -52,7 +51,6 @@ import { WeekModule } from './week/week.module';
     TestsModule,
     BookModule,
     ResultsModule,
-    WeekModule,
   ],
   controllers: [],
   providers: [],

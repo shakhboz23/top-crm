@@ -8,21 +8,13 @@ import {
 
 export class WeekDto {
   @ApiProperty({
-    example: 1,
-    description: 'User id',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  user_id: number;
-
-  @ApiProperty({
     example: false,
     description: 'First attendance',
   })
   @IsOptional()
   @IsBoolean()
   firstAttendance?: boolean;
-
+ 
   @ApiProperty({
     example: false,
     description: 'Second attendance',
